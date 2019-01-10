@@ -1,0 +1,46 @@
+{
+  "name": "lottery-cli",
+  "version": "0.0.2",
+  "main": "bin/lottery.js",
+  "description": "",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test/**/*.test.js",
+    "test:watch": "yarn test -- --watch",
+    "test:coverage": "nyc yarn test"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "lottery": "bin/lottery.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunooomelo/lottery.git"
+  },
+  "keywords": [
+    "megasena",
+    "lottery",
+    "library"
+  ],
+  "author": "Bruno Melo <utibmelo@gmail.com> (https://brunooomelo.com)",
+  "bugs": {
+    "url": "https://github.com/brunooomelo/lottery/issues"
+  },
+  "homepage": "https://github.com/brunooomelo/lottery#readme.md",
+  "license": "MIT",
+  "dependencies": {
+    "accounting": "^0.4.1",
+    "chalk": "^2.4.2",
+    "minimist": "^1.2.0",
+    "ora": "^3.0.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.6",
+    "nyc": "^13.1.0",
+    "sinon": "^7.2.2",
+    "sinon-chai": "^3.3.0"
+  }
+}
