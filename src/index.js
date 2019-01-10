@@ -18,6 +18,9 @@ module.exports = () => {
     case "version":
       require("./cmd/version")(args)
       break
+    case "megasena":
+      require("./cmd/megasena")(args)
+      break
     default:
       error(`"${cmd}" is not a valid command!`, true)
       break
