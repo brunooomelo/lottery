@@ -7,12 +7,11 @@ const menus = {
 
     lottery help <command>  quick help on <command>`,
 
-  megasena:  `
+  megasena: `
     lottery megasena <options>
 
     --concurso, -c  .......... show contest result
-  `,
-
+  `
 }
 
 module.exports = (args) => {

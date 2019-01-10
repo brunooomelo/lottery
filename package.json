@@ -6,7 +6,8 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha test/**/*.test.js",
     "test:watch": "yarn test -- --watch",
-    "test:coverage": "nyc yarn test"
+    "test:coverage": "nyc yarn test",
+    "lint": "./node_modules/.bin/eslint **/*.js"
   },
   "preferGlobal": true,
   "bin": {
@@ -37,6 +38,12 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^5.12.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^13.1.0",

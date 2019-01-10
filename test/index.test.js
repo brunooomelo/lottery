@@ -47,6 +47,3 @@ describe('Main CLI', () => {
     })
   })
 })
-
-
-
