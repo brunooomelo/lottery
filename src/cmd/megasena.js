@@ -4,16 +4,16 @@ const { formatNumber } = require('accounting')
 
 const spinner = ora({
   text: 'Retrieving Lottery data...',
-  color: 'yellow',
+  color: 'yellow'
 })
 
 module.exports = (args) => {
   const contest = args.c || args.concurso
-  const query = `${contest? `?concurso=${contest}` : '' }`
+  const query = `${contest ? `?concurso=${contest}` : ''}`
   const token = `!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLNDH0MPAzcDbwMPI0sDBxNXAOMwrzCjA0sjIEKIoEKnN0dPUzMfQwMDEwsjAw8XZw8XMwtfQ0MPM2I02-AAzgaENIfrh-FqsQ9wNnUwNHfxcnSwBgIDUyhCvA5EawAjxsKckMjDDI9FQE-F4ca/dl5/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_HGK818G0KO6H80AU71KG7J0072/res/id=buscaResultado/c=cacheLevelPage/=`
   const url = `http://loterias.caixa.gov.br/wps/portal/loterias/landing/megasena/${token}/${query}`
   spinner.start()
-  return request(url, { jar:true })
+  return request(url, { jar: true })
     .then(stopSpinner)
     .then(parseResponseToJson)
     .then(verifyError)
@@ -32,7 +32,7 @@ const parseResponseToJson = (response) => {
 }
 
 const verifyError = body => {
-  if(body.mensagens.length === 0) return body
+  if (body.mensagens.length === 0) return body
   throw Error(`
   ⚠ ${body.mensagens[0]}
   `)
@@ -55,7 +55,7 @@ const extractLotteryValuesFromBody = (body) => {
     dt_proximo_concursoStr: body.dt_proximo_concursoStr,
     de_local_sorteio: body.de_local_sorteio,
     no_cidade: body.no_cidade,
-    sg_uf: body.sg_uf,
+    sg_uf: body.sg_uf
   }
 }
 
@@ -71,21 +71,21 @@ const responseConsole = (body) => {
   ${body.acumulado === 0 ? winner(body.ganhadores, body.valor) : 'ACUMULADO!!'}
 
   Quina: 5 números acertados
-  ${body.ganhadores_quina} apostas ganhadoras, R$ ${formatNumber(body.valor_quina, 2, ".", ",")}
+  ${body.ganhadores_quina} apostas ganhadoras, R$ ${formatNumber(body.valor_quina, 2, '.', ',')}
 
   Quadra: 4 números acertados
-  ${body.ganhadores_quadra} apostas ganhadoras, R$ ${formatNumber(body.valor_quadra, 2, ".", ",")}
+  ${body.ganhadores_quadra} apostas ganhadoras, R$ ${formatNumber(body.valor_quadra, 2, '.', ',')}
 
   -------------------------------------------------
   Proximo Sorteio ${body.dt_proximo_concursoStr}
-  Estimativa de prêmio é R$ ${formatNumber(body.vr_estimativa, 2, ".", ",")}
+  Estimativa de prêmio é R$ ${formatNumber(body.vr_estimativa, 2, '.', ',')}
   -------------------------------------------------
   `
   console.info(responseTemplate)
 }
-const winner = (bet, priceAmount) => (`Sena: 6 números acertados 🎉
-  ${bet} apostas ganhadoras, R$ ${formatNumber(priceAmount, 2, ".", ",")}`)
 
+const winner = (bet, priceAmount) => (`Sena: 6 números acertados 🎉
+  ${bet} apostas ganhadoras, R$ ${formatNumber(priceAmount, 2, '.', ',')}`)
 
 const errorHandler = ({ message }) => {
   spinner.stop()

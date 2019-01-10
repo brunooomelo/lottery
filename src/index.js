@@ -1,28 +1,28 @@
-const minimist = require("minimist")
+const minimist = require('minimist')
 const error = require('./utils/error')
 
 module.exports = () => {
   const args = minimist(process.argv.slice(2))
-  let cmd = args._[0] || "help"
+  let cmd = args._[0] || 'help'
   if (args.version || args.v) {
-    cmd = "version"
+    cmd = 'version'
   }
   if (args.help || args.h) {
-    cmd = "help"
+    cmd = 'help'
   }
 
   switch (cmd) {
-    case "help":
-      require("./cmd/help")(args)
+    case 'help':
+      require('./cmd/help')(args)
       break
-    case "version":
-      require("./cmd/version")(args)
+    case 'version':
+      require('./cmd/version')(args)
       break
-    case "megasena":
-      require("./cmd/megasena")(args)
+    case 'megasena':
+      require('./cmd/megasena')(args)
       break
     default:
-      error(`"${cmd}" is not a valid command!`, true)
+      error(`'${cmd}' is not a valid command!`, true)
       break
   }
 }
