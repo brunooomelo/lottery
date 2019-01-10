@@ -1,7 +1,7 @@
 {
-  "name": "lottery",
+  "name": "lottery-cli",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "bin/lottery.js",
   "description": "",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/**/*.test.js",
@@ -10,7 +10,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "lottery": "bin/lottery"
+    "lottery": "bin/lottery.js"
   },
   "repository": {
     "type": "git",
