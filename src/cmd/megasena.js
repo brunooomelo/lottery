@@ -16,6 +16,7 @@ module.exports = (args) => {
   return request(url, { jar:true })
     .then(stopSpinner)
     .then(parseResponseToJson)
+    .then(verifyError)
     .then(extractLotteryValuesFromBody)
     .then(responseConsole)
     .catch(errorHandler)
@@ -28,6 +29,13 @@ const stopSpinner = (body) => {
 
 const parseResponseToJson = (response) => {
   return JSON.parse(response)
+}
+
+const verifyError = body => {
+  if(body.mensagens.length === 0) return body
+  throw Error(`
+  ⚠ ${body.mensagens[0]}
+  `)
 }
 
 const extractLotteryValuesFromBody = (body) => {
@@ -60,7 +68,7 @@ const responseConsole = (body) => {
 
   ${body.resultadoOrdenado}
 
-  ACUMULADO!!
+  ${body.acumulado === 0 ? winner(body.ganhadores, body.valor) : 'ACUMULADO!!'}
 
   Quina: 5 números acertados
   ${body.ganhadores_quina} apostas ganhadoras, R$ ${formatNumber(body.valor_quina, 2, ".", ",")}
@@ -75,8 +83,11 @@ const responseConsole = (body) => {
   `
   console.info(responseTemplate)
 }
+const winner = (bet, priceAmount) => (`Sena: 6 números acertados 🎉
+  ${bet} apostas ganhadoras, R$ ${formatNumber(priceAmount, 2, ".", ",")}`)
 
-const errorHandler = (error) => {
+
+const errorHandler = ({ message }) => {
   spinner.stop()
-  console.error(`${error}`)
+  console.info(`${message}`)
 }
