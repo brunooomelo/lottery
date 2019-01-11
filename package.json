@@ -9,6 +9,12 @@
     "test:coverage": "nyc yarn test",
     "lint": "./node_modules/.bin/eslint **/*.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint",
+      "pre-push": "yarn lint && yarn test"
+    }
+  },
   "preferGlobal": true,
   "bin": {
     "lottery": "bin/lottery.js"
@@ -44,6 +50,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "husky": "^1.3.1",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^13.1.0",
