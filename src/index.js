@@ -21,8 +21,11 @@ module.exports = () => {
     case 'megasena':
       require('./cmd/megasena')(args)
       break
+    case 'lotofacil':
+      require('./cmd/lotofacil')(args)
+      break
     default:
-      error(`'${cmd}' is not a valid command!`, true)
+      error(`"${cmd}" is not a valid command!`, true)
       break
   }
 }
