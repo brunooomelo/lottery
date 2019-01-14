@@ -1,4 +1,6 @@
+[![Build Status](https://travis-ci.org/brunooomelo/lottery.svg?branch=master)](https://travis-ci.org/brunooomelo/lottery)
 # Lottery CLI
+
 
 > A CLI that will make a bettor's life easier.
 
