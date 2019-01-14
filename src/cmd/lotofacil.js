@@ -12,6 +12,7 @@ module.exports = (args) => {
   const query = `${contest ? `?concurso=${contest}` : ''}`
   const token = `!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLNDH0MPAzcDbz8vTxNDRy9_Y2NQ13CDA0sTIEKIoEKnN0dPUzMfQwMDEwsjAw8XZw8XMwtfQ0MPM2I02-AAzgaENIfrh-FqsQ9wBmoxN_FydLAGAgNTKEK8DkRrACPGwpyQyMMMj0VAcySpRM!/dl5/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_61L0H0G0J0VSC0AC4GLFAD2003/res/id=buscaResultado/c=cacheLevelPage/=`
   const url = `http://loterias.caixa.gov.br/wps/portal/loterias/landing/lotofacil/${token}/${query}`
+  spinner.start()
   return request(url, { jar: true })
     .then(stopSpinner)
     .then(parseResponseToJson)
@@ -72,17 +73,15 @@ const extractLotteryValuesFromBody = (body) => {
 }
 
 const responseConsole = (body) => {
-  const responseTemplate = `
+  const responseHeader = `
   -------------------------------------------------
   Concurso: ${body.nu_concurso} - ${body.dt_apuracaoStr}
   Sorteio realizado ${body.localSorteio} em ${body.no_cidade}, ${body.sg_uf}
-  -------------------------------------------------
-  ${brokenInRow(body.resultadoOrdenado)}
-
-  ${body.sorteioAcumulado && `ACUMULADO!!`}
-
-  ${showText(!body.sorteioAcumulado, '🎉')}
-  ${!body.sorteioAcumulado ? `${body.qt_ganhador_faixa1} apostas ganhadoras, R$ ${formatNumber(body.vr_rateio_faixa1, 2, '.', ',')}` : `Não houve ganhador`}
+  -------------------------------------------------`
+  console.info(responseHeader)
+  console.info(brokenInRow(body.resultadoOrdenado))
+  console.info(`
+  ${showText(body)}
 
   14 acertos
   ${body.qt_ganhador_faixa2} apostas ganhadoras, R$ ${formatNumber(body.vr_rateio_faixa2, 2, '.', ',')}
@@ -95,13 +94,13 @@ const responseConsole = (body) => {
 
   11 acertos
   ${body.qt_ganhador_faixa5} apostas ganhadoras, R$ ${formatNumber(body.vr_rateio_faixa5, 2, '.', ',')}
+  `)
 
+  console.info(`
   -------------------------------------------------
   Proximo Sorteio ${body.dtProximoConcursoStr}
   Estimativa de prêmio é R$ ${formatNumber(body.vrEstimativa, 2, '.', ',')}
-  -------------------------------------------------
-  `
-  console.info(responseTemplate)
+  -------------------------------------------------`)
 }
 
 const brokenInRow = (string) => {
@@ -117,7 +116,11 @@ const brokenInRow = (string) => {
   return result.string
 }
 
-const showText = (cond, text) => {
-  if (cond === true) return `15 acertos ${text}`
-  return '15 acertos'
+const showText = body => {
+  if (body.sorteioAcumulado === true) {
+    return ('ACUMULADO!!\n\n  15 acertos\n  Não houve ganhador')
+  }
+  return (
+    '15 acertos 🎉\n  ' + body.qt_ganhador_faixa1 + ' apostas ganhadoras, R$ ' + formatNumber(body.vr_rateio_faixa1, 2, '.', ',')
+  )
 }
