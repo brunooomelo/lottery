@@ -8,4 +8,7 @@ cache:
     "node_modules"
 
 before_script:
-  - npm run test:coverage
+  - yarn test && yarn lint
+
+before_script:
+  - yarn coveralls
