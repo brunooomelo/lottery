@@ -7,7 +7,8 @@
     "test": "./node_modules/.bin/mocha test/**/*.test.js",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "nyc yarn test",
-    "lint": "./node_modules/.bin/eslint **/*.js"
+    "lint": "./node_modules/.bin/eslint **/*.js",
+    "coveralls": "yarn test:coverage && nyc report --reporter=text-lcov | coveralls"
   },
   "husky": {
     "hooks": {
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "coveralls": "^3.0.2",
     "eslint": "^5.12.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
