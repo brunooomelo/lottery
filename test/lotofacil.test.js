@@ -2,6 +2,7 @@ const chai = require('chai')
 const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 const nock = require('nock')
+const { formatNumber } = require('accounting')
 
 const expect = chai.expect
 chai.use(sinonChai)
@@ -10,13 +11,25 @@ const lotofacil = require('../src/cmd/lotofacil')
 describe('Lotofacil', () => {
   let consoleStub
 
-  const responseTemplate = `
+  const responseHeader = ({ concurso, data, local, cidade, estado }) => `
   -------------------------------------------------
-  Concurso: 1750 - 05/01/2019
-  Sorteio realizado no Caminhão da Sorte em CAIBI, SC
-  -------------------------------------------------
-   \n 01 04 06 07 10 \n 12 13 16 17 18 \n 19 20 22 23 24
+  Concurso: ${concurso} - ${data}
+  Sorteio realizado ${local} em ${cidade}, ${estado}
+  -------------------------------------------------`
+  const responseNumbers = (string) => {
+    const numbers = string.split(' ')
+    const result = numbers.reduce((acc, current, index) => {
+      if (index % 5 === 0) {
+        return { array: [ ...acc.array, numbers.slice(index, index + 5) ],
+          string: `${acc.string} \n  ${current}`
+        }
+      }
+      return { array: acc.array, string: `${acc.string} ${current}` }
+    }, { array: [], string: '' })
+    return result.string
+  }
 
+  const responseAwardsWithWinner = `
   15 acertos 🎉
   3 apostas ganhadoras, R$ 816.915,38
 
@@ -31,19 +44,8 @@ describe('Lotofacil', () => {
 
   11 acertos
   1039142 apostas ganhadoras, R$ 4,00
-
-  -------------------------------------------------
-  Proximo Sorteio 09/01/2019
-  Estimativa de prêmio é R$ 2.000.000,00
-  -------------------------------------------------
   `
-  const responseTemplateAcumulado = `
-  -------------------------------------------------
-  Concurso: 1744 - 30/11/2018
-  Sorteio realizado no Caminhão da Sorte em CAIBI, SC
-  -------------------------------------------------
-  \n  01 05 06 10 11 \n  12 13 15 17 18 \n  19 20 21 23 24
-
+  const responseAwardsWithoutWinner = `
   ACUMULADO!!
 
   15 acertos
@@ -60,12 +62,22 @@ describe('Lotofacil', () => {
 
   11 acertos
   1267141 apostas ganhadoras, R$ 4,00
-
-  -------------------------------------------------
-  Proximo Sorteio 03/12/2018
-  Estimativa de prêmio é R$ 4.500.000,00
-  -------------------------------------------------
   `
+
+  const responseFooter = ({ data, valor }) => `
+  -------------------------------------------------
+  Proximo Sorteio ${data}
+  Estimativa de prêmio é R$ ${formatNumber(valor, 2, '.', ',')}
+  -------------------------------------------------`
+
+  const parseValue = body => {
+    if (typeof body.vrEstimativa === 'string') {
+      const value = body.vrEstimativa.replace(/[.,]/g, '')
+      body.vrEstimativa = value.slice(0, value.length - 2)
+      return body
+    }
+    return body
+  }
 
   const responseMockAcumulado = {
     'nu_concurso': 1744,
@@ -115,36 +127,72 @@ describe('Lotofacil', () => {
     'error': false
   }
 
+  const paramsHeader = mock => ({
+    concurso: mock.nu_concurso,
+    data: mock.dt_apuracaoStr,
+    local: mock.localSorteio,
+    cidade: mock.no_cidade,
+    estado: mock.sg_uf
+  })
+
+  const paramsFooter = mock => ({
+    valor: mock.vrEstimativa,
+    data: mock.dtProximoConcursoStr
+  })
+
   beforeEach(() => {
     consoleStub = sinon.stub(console, 'info')
   })
   afterEach(() => {
     consoleStub.restore()
   })
+
   it('should search last lottery', async () => {
     nock('http://loterias.caixa.gov.br')
       .get('/wps/portal/loterias/landing/lotofacil/!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLNDH0MPAzcDbz8vTxNDRy9_Y2NQ13CDA0sTIEKIoEKnN0dPUzMfQwMDEwsjAw8XZw8XMwtfQ0MPM2I02-AAzgaENIfrh-FqsQ9wBmoxN_FydLAGAgNTKEK8DkRrACPGwpyQyMMMj0VAcySpRM!/dl5/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_61L0H0G0J0VSC0AC4GLFAD2003/res/id=buscaResultado/c=cacheLevelPage/=/')
-      .reply(200, responseMock)
+      .reply(200, responseMockAcumulado)
+
+    const header = paramsHeader(responseMockAcumulado)
+    const footer = paramsFooter(parseValue(responseMockAcumulado))
 
     await lotofacil({})
-    expect(consoleStub).to.have.been.calledWith(responseTemplate)
+
+    expect(consoleStub).to.have.been.calledWith(responseHeader(header))
+    expect(consoleStub).to.have.been.calledWith(responseNumbers(responseMockAcumulado.resultadoOrdenado.replace(/-/g, ' ')))
+    expect(consoleStub).to.have.been.calledWith(responseAwardsWithoutWinner)
+    expect(consoleStub).to.have.been.calledWith(responseFooter(footer))
   })
-  it.only('should return the result of a specific search and have a winner', async () => {
+
+  it('should return the result of a specific search and have a winner', async () => {
     nock('http://loterias.caixa.gov.br')
       .get('/wps/portal/loterias/landing/lotofacil/!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLNDH0MPAzcDbz8vTxNDRy9_Y2NQ13CDA0sTIEKIoEKnN0dPUzMfQwMDEwsjAw8XZw8XMwtfQ0MPM2I02-AAzgaENIfrh-FqsQ9wBmoxN_FydLAGAgNTKEK8DkRrACPGwpyQyMMMj0VAcySpRM!/dl5/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_61L0H0G0J0VSC0AC4GLFAD2003/res/id=buscaResultado/c=cacheLevelPage/=/')
       .query({ concurso: 1750 })
       .reply(200, responseMock)
 
+    const header = paramsHeader(responseMock)
+    const footer = paramsFooter(parseValue(responseMock))
+
     await lotofacil({ concurso: 1750 })
-    expect(consoleStub).to.have.been.calledWith(responseTemplate)
+    expect(consoleStub).to.have.been.calledWith(responseHeader(header))
+    expect(consoleStub).to.have.been.calledWith(responseNumbers(responseMock.resultadoOrdenado.replace(/-/g, ' ')))
+    expect(consoleStub).to.have.been.calledWith(responseAwardsWithWinner)
+    expect(consoleStub).to.have.been.calledWith(responseFooter(footer))
   })
+
   it('should return the result of a specific search', async () => {
     nock('http://loterias.caixa.gov.br')
       .get('/wps/portal/loterias/landing/lotofacil/!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOLNDH0MPAzcDbz8vTxNDRy9_Y2NQ13CDA0sTIEKIoEKnN0dPUzMfQwMDEwsjAw8XZw8XMwtfQ0MPM2I02-AAzgaENIfrh-FqsQ9wBmoxN_FydLAGAgNTKEK8DkRrACPGwpyQyMMMj0VAcySpRM!/dl5/d5/L2dBISEvZ0FBIS9nQSEh/pw/Z7_61L0H0G0J0VSC0AC4GLFAD2003/res/id=buscaResultado/c=cacheLevelPage/=/')
       .query({ concurso: 1744 })
       .reply(200, responseMockAcumulado)
 
+    const header = paramsHeader(responseMockAcumulado)
+    const footer = paramsFooter(parseValue(responseMockAcumulado))
+
     await lotofacil({ concurso: 1744 })
-    expect(consoleStub).to.have.been.calledWith(responseTemplateAcumulado)
+
+    expect(consoleStub).to.have.been.calledWith(responseHeader(header))
+    expect(consoleStub).to.have.been.calledWith(responseNumbers(responseMockAcumulado.resultadoOrdenado.replace(/-/g, ' ')))
+    expect(consoleStub).to.have.been.calledWith(responseAwardsWithoutWinner)
+    expect(consoleStub).to.have.been.calledWith(responseFooter(footer))
   })
 })
