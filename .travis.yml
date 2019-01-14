@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "8"
+
+cache:
+  yarn: true
+  directories:
+    "node_modules"
+
+before_script:
+  - yarn test && yarn lint
+
+before_script:
+  - yarn coveralls
