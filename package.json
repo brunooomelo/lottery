@@ -1,8 +1,8 @@
 {
   "name": "lottery-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "bin/lottery.js",
-  "description": "",
+  "description": "A CLI that will make a bettor's life easier",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/**/*.test.js",
     "test:watch": "yarn test -- --watch",
