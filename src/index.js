@@ -24,6 +24,9 @@ module.exports = () => {
     case 'lotofacil':
       require('./cmd/lotofacil')(args)
       break
+    case 'quina':
+      require('./cmd/quina')(args)
+      break
     default:
       error(`"${cmd}" is not a valid command!`, true)
       break
