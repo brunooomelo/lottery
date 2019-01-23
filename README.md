@@ -21,7 +21,7 @@ lottery --help
   Usage: lottery <command> [flags]
 
   where <command> is one of:
-      megasena
+      megasena, lotofacil, quina
 
   lottery help <command>  quick help on <command>
 ```
