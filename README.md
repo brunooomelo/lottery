@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/brunooomelo/lottery.svg?branch=master)](https://travis-ci.org/brunooomelo/lottery)
-[![Coverage Status](https://coveralls.io/repos/github/brunooomelo/lottery/badge.svg?branch=test%2Fbadges)](https://coveralls.io/github/brunooomelo/lottery?branch=test%2Fbadges)
+[![Coverage Status](https://coveralls.io/repos/github/brunooomelo/lottery/badge.svg?branch=master)](https://coveralls.io/github/brunooomelo/lottery?branch=master)
 # Lottery CLI
 
 
