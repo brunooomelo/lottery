@@ -11,6 +11,16 @@ const menus = {
     lottery megasena <options>
 
     --concurso, -c  .......... show contest result
+  `,
+  lotofacil: `
+    lottery lotofacil <options>
+
+    --concurso, -c  .......... show contest result
+  `,
+  quina: `
+    lottery quina <options>
+
+    --concurso, -c  .......... show contest result
   `
 }
 
