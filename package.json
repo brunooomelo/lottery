@@ -1,6 +1,6 @@
 {
   "name": "lottery-cli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "bin/lottery.js",
   "description": "A CLI that will make a bettor's life easier",
   "scripts": {
