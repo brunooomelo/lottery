@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/brunooomelo/lottery.svg?branch=master)](https://travis-ci.org/brunooomelo/lottery)
 [![Coverage Status](https://coveralls.io/repos/github/brunooomelo/lottery/badge.svg?branch=master)](https://coveralls.io/github/brunooomelo/lottery?branch=master)
+[![npm version](https://badge.fury.io/js/lottery-cli.svg)](https://www.npmjs.com/package/lottery-cli)
 # Lottery CLI
 
 
