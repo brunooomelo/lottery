@@ -27,6 +27,9 @@ module.exports = () => {
     case 'quina':
       require('./cmd/quina')(args)
       break
+    case 'lotomania':
+      require('./cmd/lotomania')(args)
+      break
     default:
       error(`"${cmd}" is not a valid command!`, true)
       break
