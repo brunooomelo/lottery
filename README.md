@@ -22,15 +22,15 @@ lottery --help
   Usage: lottery <command> [flags]
 
   where <command> is one of:
-      megasena, lotofacil, quina
+      megasena, lotofacil, quina, lotomania
 
   lottery help <command>  quick help on <command>
 ```
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
